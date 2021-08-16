@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+		<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300&display=swap" rel="stylesheet">
+		<style>
+			html {
+				font-family: 'DM Mono', monospace;
+				font-size: 25px}
+			#output1 {margin-left: 30%; margin-right: 30%;}
+		</style>
+	</head>
+<body>
+	Capture all opponent's pieces. Pawns promote only to dead (or not spawned) pieces.
+	King is an ordinary piece, no checks/checkmates/stalemates. No pawn double moves. No castling.<br>
+	<div id='output1'></div>
+	<br> 
+	<div id='link1'> To see this exact position in Lichess editor click the </div>
+</body>
+<script>
+	var table = [];
+	for (let i=0; i<8; i++){
+		table[i]=[];
+	}
+	for (let i=0; i<8; i++){
+		for (let j=0; j<8; j++){
+			table[i][j]='_';
+		}
+	}
+	//board created
+	
+	function getRandomInt(max) {
+		return Math.floor(Math.random() * max);
+	}
+	var sets = 'PpPpPpPpPpPpPpPpNnNnBbBbRrRrQqKk'
+	sets.split('').forEach(function(piece) {
+		if(piece == 'P' || piece == 'p'){ placeX = 1+getRandomInt(6)
+		} else { placeX = getRandomInt(8);}
+		placeY = getRandomInt(8);
+		table[placeX][placeY] = piece;
+	});
+	
+	function p(x,y){document.getElementById(y).innerHTML += x;};
+	
+	// creating FEN for URL
+	for (const row of table){
+		p(row+'<br>','output1')
+	}
+	
+	z = '%2f'
+	fen = ''
+	num = 0
+	for (const row of table){
+		//add fen of row from notebook
+		for (var i=0; i<8;i++){
+			if (row[i] != '_'){
+				
+				fen+=row[i]
+			} else {
+				if (i==0 || row[i-1]!='_') {var acc = 1}
+				
+				while(row[i+1]=='_'){
+					acc++;
+					i++
+				}
+				fen +=acc
+			
+			}
+		} fen+=z;
+	}
+	
+	url = 'https://lichess.org/editor?fen=' + fen + '+w+-+-+0+1'
+	
+	p("<a href='"+url+"'>link</a>"+'<br>', 'link1')
+</script>
+</html>
